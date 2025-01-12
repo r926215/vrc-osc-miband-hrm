@@ -26,9 +26,30 @@
       <div class="form-group">
         <button id="connect-button">Connect</button>
       </div>
+      <!-- UART 設定部分 -->
+      <div class="form-group">
+        <label for="com-port">COM Port</label>
+        <select id="com-port">
+          <option value="">Select COM Port</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="baud-rate">Baud Rate</label>
+        <select id="baud-rate">
+          <option value="9600">9600</option>
+          <option value="19200">19200</option>
+          <option value="38400">38400</option>
+          <option value="57600">57600</option>
+          <option value="115200">115200</option>
+        </select>
+      </div>
+      <button id="connect-uart">Connect UART</button>
+      <p class="Status">UART Status: <span id="UARTStatus">Disconnected</span></p>
+      
       <div class="form-group">
         <a target="_blank" href="https://github.com/vard88508/vrc-osc-miband-hrm">GitHub Page</a>
       </div>
+      
     </div>
     <div class="hr d-none">
       <h1 id="heartrate">
@@ -76,6 +97,7 @@
   <script src="ecdh.js"></script>
   <script src="aes.js"></script>
   <script src="bundle.js"></script>
+  <script src="uart.js"></script>
   <script>
     // let ws = new WebSocket('ws://localhost:3228');
     class Events {
@@ -259,7 +281,15 @@
       });
       window.addEventListener("heartrate", e => {
         console.log("Got heartrate", e.detail);
-        ws.send(e.detail);
+        
+        // 這裡把 e.detail 包成一個 JSON，並附上 action: "heart-rate"
+        ws.send(JSON.stringify({
+        action: "heart-rate",
+        value: e.detail
+        }));
+
+        //ws.send(e.detail);    //github author's original method
+
         hr.innerText = e.detail;
         chart.update(e.detail);
       });

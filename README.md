@@ -1,34 +1,95 @@
-# Mi Band/Amazfit OSC heart rate monitor for VRChat
-![image](https://i.imgur.com/J6bFJ7u.png)  
-By [Vard](https://twitter.com/VardFree)
-- Based on Jaapp-'s [miband-5-heart-rate-monitor](https://github.com/Jaapp-/miband-5-heart-rate-monitor) and gzalo's [miband-6-heart-rate-monitor](https://github.com/gzalo/miband-6-heart-rate-monitor)
-- Thanks [853](https://github.com/Sonic853), [Runnin4ik](https://github.com/Runnin4ik) and [Fummo](https://github.com/Fummowo) for contribution
+# Mi Band/Amazfit OSC Heart Rate Monitor for VRChat [with UART]
+
+![image](https://i.imgur.com/J6bFJ7u.png)
+
+Originally By [Vard](https://twitter.com/VardFree)
+Edited by me to support UART communication between Holtek HT32F52352 and PC
+
+- Based on Jaapp-'s [miband-5-heart-rate-monitor](https://github.com/Jaapp-/miband-5-heart-rate-monitor) and gzalo's [miband-6-heart-rate-monitor](https://github.com/gzalo/miband-6-heart-rate-monitor).
+- Thanks to [853](https://github.com/Sonic853), [Runnin4ik](https://github.com/Runnin4ik), and [Fummo](https://github.com/Fummowo) for their contributions.
+
+---
 
 ## What is this?
-This app allows you to send OSC messages of your heart rate using your smartwatch/fitness tracker to your VRChat Avatar/Chatbox.  
-Basically you have 3 parameters to play with:
-- `Heartrate` sends float value `from -1 to 1` (0-255bpm) (Use this when you need to display bpm counter)
-- `Heartrate2` sends float value `from 0 to 1` (0-255bpm) (Easier to control your animations but not enough precise over network. Do not use this to display bpm counter. Use cases: making actual sound of heartbeat, making animations which speed is equal to your bpm)
-- `Heartrate3` sends int value `from 0 to 255` (0-255bpm) (Useful for those who wanna bind specific event to specific heart rate. Use case: changing your outfit on avatar to sport one when your bpm goes higher than 130)
 
-## Supported devices
-It was recently discovered that the app can support not only Mi band 4/5, but many more devices! If your smartwatch/fitness tracker supports Amazfit or Zepp apps, give it a try.
-### Confirmed devices list:
+This application allows you to send OSC messages and UART messages containing your heart rate data from a smartwatch/fitness tracker to your VRChat avatar or chatbox and microcontrollers. It supports three customizable heartrate parameters:
+
+- **Heartrate**: Sends a float value ranging from `-1 to 1` (mapped to 0–255 bpm). Use this for displaying heart rate as BPM.
+- **Heartrate2**: Sends a float value ranging from `0 to 1` (mapped to 0–255 bpm). Easier for controlling animations but less precise. Best for tasks like heartbeat sounds or speed-based animations.
+- **Heartrate3**: Sends an integer value ranging from `0 to 255` (mapped to 0–255 bpm). Ideal for triggering specific events like switching avatars based on heart rate.
+
+- **Sending Heart Rate to UART**: Sends formatted heart rate data (datatype str) to external UART devices if a valid serial connection is established. Useful for integrating with hardware controllers or microcontrollers.
+
+
+---
+
+## Supported Devices
+
+Any device compatible with Amazfit or Zepp apps should work! Confirmed models include:
+
 - Xiaomi Mi Band 4/5/6
 - Amazfit Band 5/Bip S Lite
 
+---
+
 ## Requirements
-1. PC on Windows with Bluetooth 4.0 or higher
-2. Browser that supports Web Bluetooth API ([Like Chrome](https://google.com/chrome))
 
-## Usage
-1. First and most complicated step is to get auth key of your device. (For more information - please visit https://freemyband.com/ or https://github.com/argrento/huami-token if you experienced with python)
-2. Download and launch [vrc-osc-hrm.exe](https://github.com/vard88508/vrc-osc-miband-hrm/releases) or if you don't trust me - Download this repository and run it trough node-js
-3. Enter your auth key and click Connect (Make sure you turned off bluetooth on your phone)
-4. Pair your smartwatch/fitness tracker with browser
-5. Wait about ~15s and done! Now you sending data about your heart rate to VRChat (Don't forget to turn on OSC in Action menu)
+1. A Windows PC with Bluetooth 4.0 or higher.
+2. A browser supporting Web Bluetooth API (e.g., [Chrome](https://google.com/chrome)).
 
-## Example Avatar
-As some of you asked - I made [Example_Avatar.unitypackage](https://github.com/vard88508/vrc-osc-miband-hrm/raw/main/Example_Avatar.unitypackage) (which is also requires RED_SIM's [Simple counter shader](https://patreon.com/posts/simple-counter-62864361)) to show how `Heartrate` parameter works on avatar side.
+---
 
-If you have any questions: ask them [here](https://github.com/vrchat-community/osc/discussions/97), or in #avatars-osc channel in VRChat discord.
+## Setup and Usage
+
+### Step 1: Obtain Your Device's Auth Key
+
+You'll need to extract the auth key for your smartwatch/fitness tracker. Refer to:
+- [FreeMyBand](https://freemyband.com/)
+- [huami-token](https://github.com/argrento/huami-token) (requires Python knowledge)
+
+### Step 2: Launch the App
+
+1. Clone this repository and run it using Node.js. Make sure you have Node.js and npm installed on your system before launching.
+    &nbsp;
+    
+    1.1. Clone this repository:
+    ```bash
+    git clone https://github.com/r926215/vrc-osc-miband-hrm.git
+    cd vrc-osc-miband-hrm
+    ```
+
+    1.2. Install dependencies:
+    ```bash
+    npm install
+    ```
+
+    1.3. Run the application:
+    ```bash
+    node app.js
+    ```
+
+2. (optional) Choose the right port and baudrate for your microcontroller and click **connect UART**. <u>Connect your microcontroller before launching this app, or reload the webpage.</u>
+3. Enter your auth key and click **Connect**. Ensure Bluetooth is turned off on your phone.
+4. Pair your smartwatch/fitness tracker through the browser.
+5. Wait ~15 seconds. Your heart rate data should now stream to VRChat (ensure OSC is enabled in the Action menu), also to UART (check the terminal output).
+
+---
+
+## Example Avatar Integration
+
+An example avatar package is available: [Example_Avatar.unitypackage](https://github.com/vard88508/vrc-osc-miband-hrm/raw/main/Example_Avatar.unitypackage). It demonstrates the `Heartrate` parameter functionality. It requires RED_SIM's [Simple Counter Shader](https://patreon.com/posts/simple-counter-62864361).
+
+---
+
+## API Endpoints
+
+- **List Available COM Ports**: Retrieve a list of COM ports for serial connections:
+  ```
+  GET /list-ports
+  ```
+
+---
+
+## Community and Support
+
+Have questions? Ask in the [GitHub discussions](https://github.com/vrchat-community/osc/discussions/97) or join the #avatars-osc channel in the VRChat Discord.
